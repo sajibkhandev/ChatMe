@@ -41,3 +41,40 @@
     display: block;
     object-fit: cover;
 }
+
+
+.logo-box{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 10px;
+    width: 220px;
+    height: 62px;
+    border: 1px solid rgba(3, 1, 76,0.3);
+    border-radius: 8px;
+    margin: 30px 0px;
+}
+.logo-box p{
+    margin-left: 0px !important;
+    padding: 0px !important;
+    font-size: 12px;
+    color: #03014C;
+}
+.password-input{
+    position: relative;
+}
+.icon-box{
+    position: absolute;
+    top: 55px;
+    left: 260px;
+    
+}
+.error-message{
+    background: red;
+    padding: 10px 10px !important;
+    width: 60%;
+    box-sizing: border-box;
+    border-radius: 10px;
+    color: white !important;
+    margin-top: 10px !important;
+}
