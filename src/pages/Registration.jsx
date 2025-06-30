@@ -5,8 +5,12 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
 import RegistrationImage from '../assets/registration.png'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+ import { ToastContainer, toast } from 'react-toastify';
+
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { Audio, Bars } from 'react-loader-spinner';
 
 const MyInput = styled(TextField)({
     '& label.Mui-focused': {
@@ -36,7 +40,10 @@ const MyButton = styled(Button)({
 
 
 const Registration = () => {
+  const auth = getAuth();
+  let navigate=useNavigate()
   let [showpass,setShowPass]=useState(false)
+  let [loader,setLoader]=useState(false)
 
   let [email,setEmail]=useState("")
   let [name,setName]=useState("")
@@ -79,26 +86,32 @@ const Registration = () => {
     
    }if(!password){
     setPasswordError("Password is Required")
-   }else if(!/(?=.*[a-z])/.test(password)){
-    setPasswordError("Must be Lower Case")
-   }
-   else if(!/(?=.*[A-Z])/.test(password)){
-     setPasswordError("Must be Upper Case")
-   }
-   else if(!/(?=.*\d)/.test(password)){
-     setPasswordError("Must be One Number")
-   }
-   else if(!/(?=.*[@$!%*?&])/.test(password)){
-     setPasswordError("special character")
-   }
-   else if(!/([A-Za-z\d@$!%*?&]{8,}$)/.test(password)){
-     setPasswordError("Must be 8,16")
    }
 
-   else{
-    console.log("all done");
-    
-   }
+   if(email && (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) && name && password){
+      setLoader(true)
+      createUserWithEmailAndPassword(auth, email,name, password)
+      .then(() => {
+
+       
+       setEmail("")
+       setName("")
+       setPassword("")
+       toast.success("Registration Suecceful")
+       setLoader(false)
+       setTimeout(()=>{
+        navigate('/login')
+       },2000)
+       
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        console.log(errorCode);
+        
+      });
+        
+      }
+   
     
     
   }
@@ -110,16 +123,29 @@ const Registration = () => {
             <div className='reg-content'>
                <h2>Get started with easily register</h2>
                <p>Free register and you can enjoy it</p>
-                <MyInput onChange={handleEmail} className='sajibkhan' id="outlined-basic" label="Email Address" variant="outlined" />
+               <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+               
+                />
+                <MyInput value={email} onChange={handleEmail} className='sajibkhan' id="outlined-basic" label="Email Address" variant="outlined" />
                 {
                 emailerror && <p className='error-message'>{emailerror}</p>
                  }
-                <MyInput onChange={handleName} id="outlined-basic" label="Full name" variant="outlined" />
+                <MyInput value={name} onChange={handleName} id="outlined-basic" label="Full name" variant="outlined" />
                 {
                 nameerror && <p className='error-message'>{nameerror}</p>
                 }
                 <div className='password-input'>
-                  <MyInput onChange={handlePassword} type={showpass?"text":"password"} id="outlined-basic" label="Password" variant="outlined" />
+                  <MyInput value={password} onChange={handlePassword} type={showpass?"text":"password"} id="outlined-basic" label="Password" variant="outlined" />
                   {
                    passworderror && <p className='error-message'>{passworderror}</p>
                   }
@@ -134,13 +160,33 @@ const Registration = () => {
                   </div>
                   
                 </div>
-                <MyButton onClick={handleSignUp} variant="contained">Sign up</MyButton>
+               {
+                loader 
+                ?
+                
+                  <div>
+                   <Bars
+                      height="80"
+                      width="80"
+                      color="#4fa94d"
+                      ariaLabel="bars-loading"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                      visible={true}
+                      />
+                
+                  </div>
+                
+                 :
+                  <MyButton onClick={handleSignUp} variant="contained">Sign up</MyButton>
+               }
                 <p>Already  have an account ? <Link to='/login'><span>Sign In</span></Link></p>
            </div>
            </div>
         </Grid>
         <Grid size={6}>
            <img className='reg-image' src={RegistrationImage} alt="" />
+           
         </Grid>
        
       </Grid>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Grid from '@mui/material/Grid';
 import LoginImage from '../assets/login.png'
 import GoogleLogo from '../assets/googlelogo.png'
@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const MyInput = styled(TextField)({
     '& label.Mui-focused': {
@@ -31,7 +32,29 @@ const MyButton = styled(Button)({
 });
 
 
+
+
 const Login = () => {
+  const auth = getAuth();
+  let [email,setEmail]=useState("")
+  let [password,setPassword]=useState("")
+  
+   
+
+  let handleLogin=()=>{
+      signInWithEmailAndPassword(auth, email, password)
+  .then(() => {
+    console.log("done");
+    
+  })
+  .catch((error) => {
+    console.log(error);
+    
+  });
+       
+    
+    
+  }
   return (
     <Grid container >
         <Grid size={6}>
@@ -42,9 +65,9 @@ const Login = () => {
                  <img src={GoogleLogo} alt="" />
                  <p>Login with Google</p>
                </div>
-                <MyInput className='sajibkhan' id="outlined-basic" label="Email Address" variant="outlined" />
-                <MyInput type='password' id="outlined-basic" label="Password" variant="outlined" />
-                <MyButton variant="contained">Login to Continue</MyButton>
+                <MyInput onChange={(e)=>setEmail(e.target.value)} value={email} className='sajibkhan' id="outlined-basic" label="Email Address" variant="outlined" />
+                <MyInput onChange={(e)=>setPassword(e.target.value)} value={password} type='password' id="outlined-basic" label="Password" variant="outlined" />
+                <MyButton  onClick={handleLogin} variant="contained">Login to Continue</MyButton>
                 <p>Don’t have an account ?<Link to='/'><span>Sign up</span></Link></p>
                  
            </div>
