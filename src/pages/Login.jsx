@@ -5,11 +5,14 @@ import GoogleLogo from '../assets/googlelogo.png'
 import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { Link, useNavigate } from 'react-router-dom';
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { ToastContainer, toast } from 'react-toastify';
+import { Bars } from 'react-loader-spinner';
 
 const MyInput = styled(TextField)({
-    '& label.Mui-focused': {
+  '& label.Mui-focused': {
     color: '#11175D',
   },
   '& .MuiOutlinedInput-root': {
@@ -17,18 +20,20 @@ const MyInput = styled(TextField)({
       borderColor: '#11175D',
     },
   },
-  width:"60%",
-  marginBottom:"33px"
-  
-   
+  width: "60%",
+  marginTop: "33px"
+
+
 
 });
 const MyButton = styled(Button)({
   width: '60%',
-  background:"#5F35F5",
-  padding:"19px 0px",
-  borderRadius:"86px"
-  
+  background: "#5F35F5",
+  padding: "19px 0px",
+  borderRadius: "86px",
+  marginTop: "33px",
+  display: "inline-block"
+
 });
 
 
@@ -36,50 +41,158 @@ const MyButton = styled(Button)({
 
 const Login = () => {
   const auth = getAuth();
-  let [email,setEmail]=useState("")
-  let [password,setPassword]=useState("")
-  
-   
+  let navigate = useNavigate()
+  const provider = new GoogleAuthProvider();
+  let [showpass, setShowPass] = useState(false)
+  let [loader, setLoader] = useState(false)
 
-  let handleLogin=()=>{
+  let [email, setEmail] = useState("")
+  let [password, setPassword] = useState("")
+
+  let [emailerror, setEmailError] = useState("")
+  let [passworderror, setPasswordError] = useState("")
+
+  let handleEmail = (e) => {
+    setEmail(e.target.value);
+    setEmailError("")
+
+  }
+
+  let handlePassword = (e) => {
+    setPassword(e.target.value);
+    setPasswordError("")
+
+  }
+
+  let handleLogin = () => {
+    if (!email) {
+      setEmailError("Email is Required")
+
+    } else {
+      if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+        setEmailError("Enter a valid Email");
+
+      }
+    }
+
+    if (!password) {
+      setPasswordError("Password is Required")
+    }
+
+    if (email && (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) && password) {
+
+     setLoader(true)
       signInWithEmailAndPassword(auth, email, password)
-  .then(() => {
-    console.log("done");
-    
-  })
-  .catch((error) => {
-    console.log(error);
-    
-  });
-       
-    
-    
+        .then((user) => {
+          if (user.user.emailVerified) {
+            toast.success("login done");
+            navigate("/home")
+            setLoader(false)
+          } else {
+            toast.error("Verify Your Email")
+          }
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          if (errorCode.includes("auth/invalid-credential")) {
+            toast.error("Give a Right Email and Password");
+
+          }
+
+
+        });
+
+
+
+    }
+
+
+  }
+
+  let handleGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        navigate("/home")
+
+
+      }).catch((error) => {
+        const errorCode = error.code;
+        console.log(errorCode);
+
+
+      });
+
+
   }
   return (
     <Grid container >
-        <Grid size={6}>
-           <div className='reg-content-box'>
-            <div className='reg-content'>
-               <h2>Login to your account!</h2>
-               <div className='logo-box'>
-                 <img src={GoogleLogo} alt="" />
-                 <p>Login with Google</p>
-               </div>
-                <MyInput onChange={(e)=>setEmail(e.target.value)} value={email} className='sajibkhan' id="outlined-basic" label="Email Address" variant="outlined" />
-                <MyInput onChange={(e)=>setPassword(e.target.value)} value={password} type='password' id="outlined-basic" label="Password" variant="outlined" />
-                <MyButton  onClick={handleLogin} variant="contained">Login to Continue</MyButton>
-                <p>Don’t have an account ?<Link to='/'><span>Sign up</span></Link></p>
-                 
-           </div>
-           </div>
-           
-        </Grid>
-        <Grid size={6}>
-           <img className='reg-image' src={LoginImage} alt="" />
-        </Grid>
-       
+      <Grid size={6}>
+        <div className='reg-content-box'>
+          <div className='reg-content'>
+            <h2>Login to your account!</h2>
+            <div onClick={handleGoogle} className='logo-box'>
+              <img src={GoogleLogo} alt="" />
+              <p>Login with Google</p>
+            </div>
+            <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick={false}
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
+            <MyInput onChange={handleEmail} value={email} className='sajibkhan' id="outlined-basic" label="Email Address" variant="outlined" />
+            {
+              emailerror && <p className='error-message'>{emailerror}</p>
+            }
+            <div className='password-input'>
+              <MyInput value={password} onChange={handlePassword} type={showpass ? "text" : "password"} id="outlined-basic" label="Password" variant="outlined" />
+              {
+                passworderror && <p className='error-message'>{passworderror}</p>
+              }
+              <div onClick={() => setShowPass(!showpass)} className='icon-box'>
+                {
+                  showpass
+                    ?
+                    <FiEye />
+                    :
+                    <FiEyeOff />
+                }
+              </div>
+
+            </div>
+            {
+              loader
+                ? <Bars
+                  height="80"
+                  width="80"
+                  color="#4fa94d"
+                  ariaLabel="bars-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                />
+                :
+                <MyButton onClick={handleLogin} variant="contained">Login to Continue</MyButton>
+
+            }
+            <p>Don’t have an account ?<Link to='/'><span>Sign up</span></Link></p>
+
+          </div>
+        </div>
+
       </Grid>
-    
+      <Grid size={6}>
+        <img className='reg-image' src={LoginImage} alt="" />
+      </Grid>
+
+    </Grid>
+
   )
 }
 
