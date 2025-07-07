@@ -79,3 +79,44 @@
     color: white !important;
     margin-top: 10px !important;
 }
+.forget-password{
+    padding-left: 70px;
+    cursor: pointer;
+}
+
+
+
+
+
+.new-ui-for-forgetpassword{
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+        
+}
+.forgetpassword-box{
+    width: 500px;
+    padding: 100px 100px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0px 0px 10px black;
+    
+    
+}
+.button-box{
+    display: flex;
+    column-gap: 10px;
+}
+.forgetpassword-box .sajibkhan{
+    width: 100% !important;
+}
+.forgetpassword-box .error-message{
+   width: 100% !important;
+}
