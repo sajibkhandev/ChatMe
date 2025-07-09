@@ -10,6 +10,8 @@ import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopu
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { ToastContainer, toast } from 'react-toastify';
 import { Bars } from 'react-loader-spinner';
+import { useDispatch } from 'react-redux';
+import { userdetails } from '../slices/userInfoSlice';
 
 const MyInput = styled(TextField)({
   '& label.Mui-focused': {
@@ -36,12 +38,12 @@ const MyButton = styled(Button)({
 
 });
 
-
-
-
 const Login = () => {
   const auth = getAuth();
   let navigate = useNavigate()
+
+  let dispatch=useDispatch()
+  
   const provider = new GoogleAuthProvider();
   let [showpass, setShowPass] = useState(false)
   let [loader, setLoader] = useState(false)
@@ -55,6 +57,9 @@ const Login = () => {
   let [emailerror, setEmailError] = useState("")
   let [passworderror, setPasswordError] = useState("")
   let [forgetemailerror, setforgetEmailError] = useState("")
+
+
+
 
   let handleEmail = (e) => {
     setEmail(e.target.value);
@@ -94,6 +99,12 @@ const Login = () => {
       signInWithEmailAndPassword(auth, email, password)
         .then((user) => {
           if (user.user.emailVerified) {
+            // console.log(user.user);
+            dispatch(userdetails(user.user))
+            localStorage.setItem("userinfo",JSON.stringify(user.user))
+            
+
+            
             toast.success("login done");
             navigate("/home")
             setLoader(false)
@@ -116,11 +127,7 @@ const Login = () => {
             setLoader(false)
 
           }
-
-
         });
-
-
 
     }
 
