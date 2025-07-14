@@ -106,7 +106,7 @@ const Login = () => {
 
             
             toast.success("login done");
-            navigate("/home")
+            navigate("/pages/home")
             setLoader(false)
             setLoader(false)
           } else {
