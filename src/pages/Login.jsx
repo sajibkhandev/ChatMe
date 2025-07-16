@@ -137,7 +137,7 @@ const Login = () => {
   let handleGoogle = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        navigate("/home")
+        navigate("/pages/home")
 
 
       }).catch((error) => {

@@ -1,24 +1,28 @@
-*{
+* {
     margin: 0;
     padding: 0;
 }
-.reg-content-box{
+
+.reg-content-box {
     display: flex;
     justify-content: end;
     align-items: center;
     height: 100%;
 }
-.reg-content{
+
+.reg-content {
     padding-right: 50px;
     width: 500px;
 }
-.reg-content h2{
+
+.reg-content h2 {
     font-size: 34px;
     font-weight: 700;
     color: #11175D;
     font-family: "Nunito", sans-serif;
 }
-.reg-content p{
+
+.reg-content p {
     font-size: 20px;
     font-weight: 400;
     color: #808080;
@@ -26,16 +30,18 @@
     padding-top: 13px;
     padding-bottom: 39px;
 }
-.reg-content p:last-child{
+
+.reg-content p:last-child {
     font-size: 13px;
     color: #11175D;
     margin-left: 48px;
 }
-.reg-content p:last-child span{
+
+.reg-content p:last-child span {
     color: #EA6C00;
 }
 
-.reg-image{
+.reg-image {
     height: 100vh;
     width: 100%;
     display: block;
@@ -43,34 +49,38 @@
 }
 
 
-.logo-box{
+.logo-box {
     display: flex;
     align-items: center;
     justify-content: center;
     column-gap: 10px;
     width: 220px;
     height: 62px;
-    border: 1px solid rgba(3, 1, 76,0.3);
+    border: 1px solid rgba(3, 1, 76, 0.3);
     border-radius: 8px;
     margin: 30px 0px;
     cursor: pointer;
 }
-.logo-box p{
+
+.logo-box p {
     margin-left: 0px !important;
     padding: 0px !important;
     font-size: 12px;
     color: #03014C;
 }
-.password-input{
+
+.password-input {
     position: relative;
 }
-.icon-box{
+
+.icon-box {
     position: absolute;
     top: 55px;
     left: 260px;
-    
+
 }
-.error-message{
+
+.error-message {
     background: red;
     padding: 10px 10px !important;
     width: 60%;
@@ -79,7 +89,8 @@
     color: white !important;
     margin-top: 10px !important;
 }
-.forget-password{
+
+.forget-password {
     padding-left: 70px;
     cursor: pointer;
 }
@@ -88,7 +99,7 @@
 
 
 
-.new-ui-for-forgetpassword{
+.new-ui-for-forgetpassword {
     width: 100%;
     height: 100vh;
     background: rgba(0, 0, 0, 0.6);
@@ -99,30 +110,34 @@
     display: flex;
     justify-content: center;
     align-items: center;
-        
+
 }
-.forgetpassword-box{
+
+.forgetpassword-box {
     width: 500px;
     padding: 100px 100px;
     background: white;
     border-radius: 20px;
     box-shadow: 0px 0px 10px black;
-    
-    
+
+
 }
-.button-box{
+
+.button-box {
     display: flex;
     column-gap: 10px;
 }
-.forgetpassword-box .sajibkhan{
+
+.forgetpassword-box .sajibkhan {
     width: 100% !important;
 }
-.forgetpassword-box .error-message{
-   width: 100% !important;
+
+.forgetpassword-box .error-message {
+    width: 100% !important;
 }
 
 /* Sideber design start */
-.sideber-layout{
+.sideber-layout {
     background: #5F35F5;
     height: 95vh;
     width: 80%;
@@ -135,33 +150,40 @@
     padding: 40px 0px;
     box-sizing: border-box;
 }
-.profile-layout{
+
+.profile-layout {
     width: 110px;
     height: 110px;
     border-radius: 100%;
 }
-.profile-layout img{
+
+.profile-layout img {
     width: 100%;
 }
-.page-layout{
+
+.page-layout {
     display: flex;
     flex-direction: column;
     row-gap: 66px;
 }
-.page-icon{
-    color: rgba(255, 255, 255,0.70);
+
+.page-icon {
+    color: rgba(255, 255, 255, 0.70);
     font-size: 50px;
 }
-.logout-icon{
+
+.logout-icon {
     color: white;
 }
+
 .active .page-icon {
-   color: #5F35F5;
-    
+    color: #5F35F5;
+
 }
-.active  {
+
+.active {
     position: relative;
-     z-index: 2;
+    z-index: 2;
 }
 
 .active::after {
@@ -176,6 +198,7 @@
     content: "";
     z-index: -1;
 }
+
 .active::before {
     background: #5F35F5;
     width: 15px;
@@ -187,4 +210,129 @@
     content: "";
     z-index: 1;
 }
+
 /* Sideber design end */
+.grid-division {
+    margin-top: 23px;
+    margin-right: 30px;
+}
+.friendrequstlist-box{
+    margin-top: 100px;
+    
+}
+
+.userlist-box {
+    width: 100%;
+    height: 350px !important; 
+    
+}
+.userlist-input-box{
+    position: relative;
+}
+
+.userlist-input-box input {
+    width: 100%;
+    background: white;
+    border-radius: 20px;
+    border: 0px;
+    padding: 18px 70px;
+    box-sizing: border-box;
+   box-shadow: 0px 18px 15px 0px rgba(0,0,0,0.11);
+     -webkit-box-shadow: 0px 18px 15px 0px rgba(0,0,0,0.11);
+    -moz-box-shadow: 0px 18px 15px 0px rgba(0,0,0,0.11);
+}
+
+.userlist-input-box .search{
+    position: absolute;
+    top: 50%;
+    left: 25px; 
+    transform: translateY(-50%);
+       
+}
+.userlist-input-box .threedot{
+    position: absolute;
+    top: 50%;
+    right: 25px;
+    transform: translateY(-50%);
+    color: #5F35F5;
+    
+}
+.userlist-profile-box{
+    overflow-Y: scroll;
+    height: 100%;
+    margin-top: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 18px 15px 0px rgba(0,0,0,0.11);
+     -webkit-box-shadow: 0px 18px 15px 0px rgba(0,0,0,0.11);
+    -moz-box-shadow: 0px 18px 15px 0px rgba(0,0,0,0.11);
+   
+}
+.userlist-profile-box .title-box{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 25px;
+}
+.userlist-profile-box .title-box h4{
+    font-size:20px ;
+    font-weight: 600;
+    color: black;
+    font-family: "Nunito", sans-serif;
+
+}
+.userlist-profile-box .title-box .threedot{
+    color: #5F35F5;
+}
+.image-box {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    padding-right: 20px;
+}
+.image-box img{
+    width: 100%;
+    height: 100%;
+}
+.title-profile{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 25px;
+    
+    position: relative;
+}
+.title-profile::after{
+    width: 90%;
+    height: 1px;
+    background: rgba(0, 0, 0,0.25);
+    position: absolute;
+    bottom: 0;
+    left: 22px;
+    content: "";
+}
+.title-profile .title-pere{
+    display: flex;
+    align-items: center;
+}
+.title-profile h4{
+    font-size: 18px;
+    font-weight: 600;
+    color: black;
+     font-family: "Nunito", sans-serif;
+}
+.title-profile p{
+    font-size: 14px;
+    font-weight: 500;
+    color: #4D4D4D;
+     font-family: "Nunito", sans-serif;
+}
+.title-profile button{
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+     font-family: "Nunito", sans-serif;
+     padding: 2px 15px;
+     background: #5F35F5;
+     border: 0px;
+     border-radius: 10px;
+}
