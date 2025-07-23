@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { createRef, useEffect, useRef, useState } from 'react'
 import Profile from '../assets/profile.png'
 import { CiSettings } from "react-icons/ci";
 import { IoIosLogOut } from "react-icons/io";
@@ -10,18 +10,56 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { IoLogOutSharp } from "react-icons/io5";
 import { getAuth, signOut } from "firebase/auth";
 import { toast, ToastContainer } from 'react-toastify';
+import { FaCloudUploadAlt } from "react-icons/fa";
+
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
+
+
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
+
+
+
+
+
+const MyButton = styled(Button)({
+    width: '40%',
+    background: "#5F35F5",
+    padding: "12px 0px",
+    borderRadius: "86px",
+    marginTop: "33px",
+    display: "inline-block"
+
+});
 
 
 
 
 const Sideber = () => {
-    let [activevalue, setActiveValue] = useState("")
+    let [visiblepopup, setVisiblePopup] = useState(false)
+    let sajibRef = useRef(null)
 
+    let [activevalue, setActiveValue] = useState("")
     let locotion = useLocation()
 
 
     const auth = getAuth();
     let nevigate = useNavigate()
+
+    const [image, setImage] = useState('');
+    const [cropData, setCropData] = useState("");
+    const cropperRef = createRef();
+
+
+
+
+
+
+
+
+
+
     let hanldeLogout = () => {
         signOut(auth).then(() => {
             nevigate('/login')
@@ -33,20 +71,66 @@ const Sideber = () => {
         });
 
     }
+    let handleUpdateProfile = () => {
+        setVisiblePopup(true)
+
+    }
+    let handleBack = () => {
+        setVisiblePopup(false)
+
+    }
+    let handlePopupImage = (e) => {
+        // console.log(!sajibRef.current.contains(e.target))
+        if (!sajibRef.current.contains(e.target)) {
+            setVisiblePopup(false)
+        }
+    }
     useEffect(() => {
         setActiveValue(locotion.pathname.replace("/pages/", ""))
-    }, )
-   
+    },)
+
+    const onChange = (e) => {
+        e.preventDefault();
+        let files;
+        if (e.dataTransfer) {
+            files = e.dataTransfer.files;
+        } else if (e.target) {
+            files = e.target.files;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+            setImage(reader.result);
+        };
+        reader.readAsDataURL(files[0]);
+    };
+
+    const getCropData = () => {
+        if (typeof cropperRef.current?.cropper !== "undefined") {
+            setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
+            console.log(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
+
+        }
+    };
+
+
+
+
+
+
+
     return (
         <div className='sideber-layout'>
-            <div className='profile-layout'>
+            <div onClick={handleUpdateProfile} className='profile-layout'>
                 <img src={Profile} alt="Profile Image" />
+                <div className='overly'>
+                    <FaCloudUploadAlt className='icon' />
+                </div>
             </div>
             <div className='page-layout'>
-                <Link to='/pages/home' className={activevalue=="home" && "active"}><IoHomeOutline className='page-icon' /></Link>
-                <Link to='/pages/message' className={activevalue=="message" && "active"}><LuMessageCircleMore className='page-icon' /></Link>
-                <Link to='/pages/notification' className={activevalue=="notification" && "active"}><IoMdNotificationsOutline className='page-icon' /></Link>
-                <Link to='/pages/setting' className={activevalue=="setting" && "active"}><CiSettings className='page-icon' /></Link>
+                <Link to='/pages/home' className={activevalue == "home" && "active"}><IoHomeOutline className='page-icon' /></Link>
+                <Link to='/pages/message' className={activevalue == "message" && "active"}><LuMessageCircleMore className='page-icon' /></Link>
+                <Link to='/pages/notification' className={activevalue == "notification" && "active"}><IoMdNotificationsOutline className='page-icon' /></Link>
+                <Link to='/pages/setting' className={activevalue == "setting" && "active"}><CiSettings className='page-icon' /></Link>
 
 
             </div>
@@ -66,6 +150,42 @@ const Sideber = () => {
                 pauseOnHover
                 theme="light"
             />
+            {
+                visiblepopup &&
+                <div onClick={handlePopupImage} className='popup-image'>
+                    <div ref={sajibRef} className='popup-image-box'>
+                        <h2 >Update Your Profile</h2>
+                        <input type="file" onChange={onChange} />
+                        <div className='preview-box'>
+                            <div className="img-preview preview-round"></div>
+                        </div>
+                        {
+                            image && <Cropper
+                                ref={cropperRef}
+                                style={{ height: 400, width: "100%" }}
+                                initialAspectRatio={1}
+                                preview=".img-preview"
+                                src={image}
+                                viewMode={1}
+                                minCropBoxHeight={10}
+                                minCropBoxWidth={10}
+                                background={false}
+                                responsive={true}
+                                autoCropArea={1}
+                                checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                                guides={true}
+                            />
+                        }
+
+                        <div>
+                            <MyButton onClick={handleBack} variant="contained">Back</MyButton>
+                            <MyButton onClick={getCropData} variant="contained">Update</MyButton>
+                        </div>
+                    </div>
+
+                </div>
+            }
+
 
         </div>
     )
