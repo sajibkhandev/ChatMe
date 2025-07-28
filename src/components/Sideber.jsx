@@ -8,7 +8,7 @@ import { LuMessageCircleMore } from "react-icons/lu";
 import { IoHomeOutline } from "react-icons/io5";
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { IoLogOutSharp } from "react-icons/io5";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut, updateProfile } from "firebase/auth";
 import { toast, ToastContainer } from 'react-toastify';
 import { FaCloudUploadAlt } from "react-icons/fa";
 
@@ -18,6 +18,9 @@ import { styled } from '@mui/material/styles';
 
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
+
+import { getDownloadURL, getStorage, ref, uploadString } from "firebase/storage";
+import { useSelector } from 'react-redux';
 
 
 
@@ -50,19 +53,20 @@ const Sideber = () => {
     const [image, setImage] = useState('');
     const [cropData, setCropData] = useState("");
     const cropperRef = createRef();
+    const storage = getStorage();
 
+    const data=useSelector((state)=>state.userinfo.value)
+    // console.log(data.photoURL);
 
-
-
-
-
-
+   
+    
 
 
 
     let hanldeLogout = () => {
         signOut(auth).then(() => {
             nevigate('/login')
+            localStorage.removeItem("userinfo")
 
 
         }).catch((error) => {
@@ -107,7 +111,31 @@ const Sideber = () => {
     const getCropData = () => {
         if (typeof cropperRef.current?.cropper !== "undefined") {
             setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
-            console.log(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
+          
+
+            const storageRef = ref(storage, auth.currentUser.uid);
+
+            const message4 = cropperRef.current?.cropper.getCroppedCanvas().toDataURL();
+             uploadString(storageRef, message4, 'data_url').then((snapshot) => {
+                console.log('Uploaded a data_url string!');
+                });
+
+                getDownloadURL(storageRef).then((downloadURL) => {
+                console.log('File available at', downloadURL);
+
+                 updateProfile(auth.currentUser, {
+                            
+                            photoURL:downloadURL 
+                    }).then(()=>{
+                        setImage("")
+                        setVisiblePopup(false)
+                        setCropData("")
+                    })
+
+
+                });
+               
+                
 
         }
     };
@@ -121,11 +149,12 @@ const Sideber = () => {
     return (
         <div className='sideber-layout'>
             <div onClick={handleUpdateProfile} className='profile-layout'>
-                <img src={Profile} alt="Profile Image" />
+                <img src={data.photoURL} alt="Profile Image" />
                 <div className='overly'>
                     <FaCloudUploadAlt className='icon' />
                 </div>
             </div>
+            <h4>{data.displayName}</h4>
             <div className='page-layout'>
                 <Link to='/pages/home' className={activevalue == "home" && "active"}><IoHomeOutline className='page-icon' /></Link>
                 <Link to='/pages/message' className={activevalue == "message" && "active"}><LuMessageCircleMore className='page-icon' /></Link>

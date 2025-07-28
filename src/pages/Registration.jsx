@@ -9,7 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { ToastContainer, toast } from 'react-toastify';
 
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import { Audio, Bars } from 'react-loader-spinner';
 
 const MyInput = styled(TextField)({
@@ -92,9 +92,11 @@ const Registration = () => {
       setLoader(true)
       createUserWithEmailAndPassword(auth, email, password)
         .then((user) => {
-          sendEmailVerification(auth.currentUser)
-            .then(() => {
-              // console.log(user.user);
+          updateProfile(auth.currentUser, {
+            displayName: name,
+            photoURL: "https://firebasestorage.googleapis.com/v0/b/chatme-292ec.firebasestorage.app/o/avater.webp?alt=media&token=7dcec873-c670-4239-9326-c6a84fc24054"
+          }).then(() => {
+              sendEmailVerification(auth.currentUser)
               setEmail("")
               setName("")
               setPassword("")
@@ -104,8 +106,12 @@ const Registration = () => {
                 navigate('/login')
               }, 2000)
 
-
-            });
+              console.log(user);
+              
+            
+          })
+          
+           
 
         })
         .catch((error) => {
