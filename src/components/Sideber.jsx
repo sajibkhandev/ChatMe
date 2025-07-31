@@ -20,7 +20,8 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 
 import { getDownloadURL, getStorage, ref, uploadString } from "firebase/storage";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { userdetails } from '../slices/userInfoSlice';
 
 
 
@@ -56,12 +57,8 @@ const Sideber = () => {
     const storage = getStorage();
 
     const data=useSelector((state)=>state.userinfo.value)
+    const dispatch=useDispatch()
     // console.log(data.photoURL);
-
-   
-    
-
-
 
     let hanldeLogout = () => {
         signOut(auth).then(() => {
@@ -111,7 +108,6 @@ const Sideber = () => {
     const getCropData = () => {
         if (typeof cropperRef.current?.cropper !== "undefined") {
             setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
-          
 
             const storageRef = ref(storage, auth.currentUser.uid);
 
@@ -122,14 +118,16 @@ const Sideber = () => {
 
                 getDownloadURL(storageRef).then((downloadURL) => {
                 console.log('File available at', downloadURL);
-
                  updateProfile(auth.currentUser, {
-                            
-                            photoURL:downloadURL 
+                    photoURL:downloadURL 
                     }).then(()=>{
+                        dispatch(userdetails({...data,photoURL:downloadURL}))
+                        localStorage.setItem("userinfo",JSON.stringify({...data,photoURL:downloadURL}))
+
                         setImage("")
                         setVisiblePopup(false)
                         setCropData("")
+                       
                     })
 
 
@@ -148,13 +146,15 @@ const Sideber = () => {
 
     return (
         <div className='sideber-layout'>
-            <div onClick={handleUpdateProfile} className='profile-layout'>
+            <div className='possition-h4'>
+                <div onClick={handleUpdateProfile} className='profile-layout'>
                 <img src={data.photoURL} alt="Profile Image" />
                 <div className='overly'>
                     <FaCloudUploadAlt className='icon' />
                 </div>
             </div>
             <h4>{data.displayName}</h4>
+            </div>
             <div className='page-layout'>
                 <Link to='/pages/home' className={activevalue == "home" && "active"}><IoHomeOutline className='page-icon' /></Link>
                 <Link to='/pages/message' className={activevalue == "message" && "active"}><LuMessageCircleMore className='page-icon' /></Link>

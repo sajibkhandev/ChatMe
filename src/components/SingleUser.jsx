@@ -1,14 +1,14 @@
 import React from 'react'
 import Profile2 from '../assets/profile2.png'
 
-const SingleUser = () => {
+const SingleUser = ({name,email}) => {
   return (
     <div className='title-profile'>
                 <div className='title-pere'>
                     <div className='image-box'><img src={Profile2} alt="" /></div>
                     <div>
-                            <h4>Friends Reunion</h4>
-                            <p>Hi Guys, Wassup!</p>
+                            <h4>{name}</h4>
+                            <p>{email}</p>
                    </div>
                 </div>
                 <button>Join</button>

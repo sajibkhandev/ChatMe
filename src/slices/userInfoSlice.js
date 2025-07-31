@@ -8,6 +8,8 @@ export const userInfoSlice = createSlice({
   reducers: {
     userdetails: (state,action) => {
         state.value=action.payload
+       
+        
     },
    
   },

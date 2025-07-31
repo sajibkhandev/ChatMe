@@ -10,6 +10,7 @@ import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { ToastContainer, toast } from 'react-toastify';
 
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 import { Audio, Bars } from 'react-loader-spinner';
 
 const MyInput = styled(TextField)({
@@ -41,6 +42,7 @@ const MyButton = styled(Button)({
 
 const Registration = () => {
   const auth = getAuth();
+  const db = getDatabase();
   let navigate = useNavigate()
   let [showpass, setShowPass] = useState(false)
   let [loader, setLoader] = useState(false)
@@ -71,6 +73,7 @@ const Registration = () => {
 
 
   let handleSignUp = () => {
+    
     if (!email) {
       setEmailError("Email is Required")
 
@@ -96,22 +99,26 @@ const Registration = () => {
             displayName: name,
             photoURL: "https://firebasestorage.googleapis.com/v0/b/chatme-292ec.firebasestorage.app/o/avater.webp?alt=media&token=7dcec873-c670-4239-9326-c6a84fc24054"
           }).then(() => {
-              sendEmailVerification(auth.currentUser)
-              setEmail("")
-              setName("")
-              setPassword("")
-              toast.success("Registration Successful")
-              setLoader(false)
-              setTimeout(() => {
-                navigate('/login')
-              }, 2000)
+            sendEmailVerification(auth.currentUser)
+            setEmail("")
+            setName("")
+            setPassword("")
+            toast.success("Registration Successful")
+            setLoader(false)
+            setTimeout(() => {
+              navigate('/login')
+            }, 2000)
 
-              console.log(user);
-              
-            
+          }).then(() => {
+            set(ref(db, 'userlist/' + user.user.uid ), {
+              username: user.user.displayName,
+              email: user.user.email,
+              photo: user.user.photoURL
+            });
+
           })
-          
-           
+
+
 
         })
         .catch((error) => {
