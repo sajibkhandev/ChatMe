@@ -11,7 +11,7 @@ const SingleUser = ({name,email}) => {
                             <p>{email}</p>
                    </div>
                 </div>
-                <button>Join</button>
+                <button>Add</button>
             </div>
   )
 }
