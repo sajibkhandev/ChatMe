@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { IoSearch } from "react-icons/io5";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import SingleUser from '../components/SingleUser';
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, set, push, remove } from "firebase/database";
 import { useSelector } from 'react-redux';
 
 const FriendRequestList = () => {
@@ -17,7 +17,7 @@ const FriendRequestList = () => {
       snapshot.forEach(item=>{
         if(item.val().receiverid==data.uid){
 
-          arr.push({...item.val()});
+          arr.push({...item.val(),id:item.key});
         }
         
       })
@@ -26,6 +26,18 @@ const FriendRequestList = () => {
     });
 
   }, [])
+
+  let handleAccept=(item)=>{
+    console.log(item);
+
+      set(push(ref(db, 'friend/')), {
+        ...item
+    
+        }).then(()=>{
+          remove(ref(db, 'frendrequest/' +item.id))
+        })
+    
+  }
  
   
   return (
@@ -51,8 +63,8 @@ const FriendRequestList = () => {
                                         <p>sdfsdfsd</p>
                                </div>
                             </div>
-                            <button>Acpect</button>
-                            <button>delete</button>
+                            <button onClick={()=>handleAccept(item)}>Accept</button>
+                            {/* <button>delete</button> */}
                         </div>
 
           ))
