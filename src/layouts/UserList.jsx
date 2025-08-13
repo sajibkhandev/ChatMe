@@ -15,22 +15,6 @@ const UserList = () => {
   let [concatFriend,setConcatFriend]=useState([])
   let data = useSelector((state) => (state.userinfo.value))
 
-
-let handleFriendRequest = (item) => {
-    console.log(item);
-
-    set(push(ref(db, 'frendrequest/')), {
-
-      receiverid:item.id,
-      receivername:item.username,
-      senderid:data.uid,
-      sendername:data.displayName
-
-    });
-
-  }
-
-
   useEffect(() => {
 
     const userlistRef = ref(db, 'userlist/');
@@ -46,6 +30,22 @@ let handleFriendRequest = (item) => {
 
   }, [])
 
+
+let handleFriendRequest = (item) => {
+    console.log(item);
+    set(push(ref(db, 'frendrequest/')), {
+
+      receiverid:item.id,
+      receivername:item.username,
+      senderid:data.uid,
+      sendername:data.displayName
+
+    });
+
+  }
+
+
+  
 
     useEffect(() => {
       const frendrequestRef = ref(db, 'frendrequest/');
