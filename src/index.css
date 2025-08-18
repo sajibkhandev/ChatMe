@@ -417,4 +417,13 @@
     height: 100%;
     border-radius: 50%;
 }
+.create-group{
+    background: blue;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    border: 0;
+    border-radius: 10px;
+    padding: 4px 12px;
+}
 
