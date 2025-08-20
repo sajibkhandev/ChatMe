@@ -26,7 +26,7 @@ const GroupsList = () => {
       });
   
   
-   })
+   },[])
   
   return (
    <div className='userlist-box'>
@@ -42,10 +42,10 @@ const GroupsList = () => {
             </div>
 
             {
-              allgrouplist.map(item=>(
-                <div className='title-profile'>
+              allgrouplist.map((item,index)=>(
+                <div key={index}  className='title-profile'>
                                 <div className='title-pere'>
-                                    <div className='image-box'><img src="https://firebasestorage.googleapis.com/v0/b/chatme-292ec.firebasestorage.app/o/avater.webp?alt=media&token=7dcec873-c670-4239-9326-c6a84fc24054" alt="" /></div>
+                                    <div className='image-box'><img src="https://firebasestorage.googleapis.com/v0/b/chatme-292ec.firebasestorage.app/o/images.png?alt=media&token=2812c78b-1e9a-40b6-b715-c83ba8f1c633" alt="" /></div>
                                     <div>
                                             <h4>{item.groupname}</h4>
                                             <p>{item.grouptag}</p>

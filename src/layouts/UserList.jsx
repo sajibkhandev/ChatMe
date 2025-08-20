@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { IoSearch } from "react-icons/io5";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import SingleUser from '../components/SingleUser';
-import { getDatabase, ref, onValue,set, push } from "firebase/database";
+import { getDatabase, ref, onValue, set, push } from "firebase/database";
 import { useSelector } from 'react-redux';
 
 
@@ -11,8 +11,9 @@ import { useSelector } from 'react-redux';
 const UserList = () => {
   const db = getDatabase();
   let [userlist, setUserList] = useState([])
-  let [concatFriendRequest,setConcatFriendRequest]=useState([])
-  let [concatFriend,setConcatFriend]=useState([])
+  let [concatFriendRequest, setConcatFriendRequest] = useState([])
+  let [concatFriend, setConcatFriend] = useState([])
+  let [concatBlock, setConcatBlock] = useState([])
   let data = useSelector((state) => (state.userinfo.value))
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const UserList = () => {
       let arr = []
       snapshot.forEach(item => {
         if (data.uid != item.key) {
-          arr.push({ ...item.val(), id:item.key })
+          arr.push({ ...item.val(), id: item.key })
         }
       })
       setUserList(arr)
@@ -31,56 +32,83 @@ const UserList = () => {
   }, [])
 
 
-let handleFriendRequest = (item) => {
+  let handleFriendRequest = (item) => {
     console.log(item);
     set(push(ref(db, 'frendrequest/')), {
 
-      receiverid:item.id,
-      receivername:item.username,
-      senderid:data.uid,
-      sendername:data.displayName
+      receiverid: item.id,
+      receivername: item.username,
+      senderid: data.uid,
+      sendername: data.displayName
 
     });
 
   }
 
 
-  
-
-    useEffect(() => {
-      const frendrequestRef = ref(db, 'frendrequest/');
-      onValue(frendrequestRef, (snapshot) => {
-        let arr=[]
-        snapshot.forEach(item=>{
-          arr.push(item.val().receiverid + item.val().senderid);
-          
-        })
-        setConcatFriendRequest(arr)
-       
-      });
-  
-    }, [])
 
 
-     useEffect(() => {
-      const friendRef = ref(db, 'friend/');
-      onValue(friendRef, (snapshot) => {
-        let arr=[]
-        snapshot.forEach(item=>{
-          arr.push(item.val().receiverid+item.val().senderid);
-          
-          
-          
-          
-        })
-        setConcatFriend(arr)
-       
-      });
-  
-    }, [])
+  useEffect(() => {
+    const frendrequestRef = ref(db, 'frendrequest/');
+    onValue(frendrequestRef, (snapshot) => {
+      let arr = []
+      snapshot.forEach(item => {
+        arr.push(item.val().receiverid + item.val().senderid);
 
+      })
+      setConcatFriendRequest(arr)
+
+    });
+
+  }, [])
+
+
+  useEffect(() => {
+    const friendRef = ref(db, 'friend/');
+    onValue(friendRef, (snapshot) => {
+      let arr = []
+      snapshot.forEach(item => {
+        arr.push(item.val().receiverid + item.val().senderid);
+
+
+
+
+      })
+      setConcatFriend(arr)
+
+    });
+
+  }, [])
+
+  useEffect(() => {
+    const blockRef = ref(db, 'block/');
+    onValue(blockRef, (snapshot) => {
+      let arr = []
+      snapshot.forEach(item => {
+        arr.push(item.val().blockbyid + item.val().blockid);
+
+
+      })
+      
+      setConcatBlock(arr)
+
+    });
+
+  }, [])
+
+  let handleUnblock=(item)=>{
+    console.log(item);
     
     
+  }
+  let handleBlcok=()=>{
+    console.log("block");
+    
+    
+  }
+
+
+
 
 
   return (
@@ -108,22 +136,46 @@ let handleFriendRequest = (item) => {
               </div>
 
               {
-                concatFriend.includes(item.id+data.uid)||
-                concatFriend.includes(data.uid+item.id)
-                ?
-                <button>Friend</button>
-                :
-                 concatFriendRequest.includes(item.id+data.uid) ||
-                 concatFriendRequest.includes(data.uid+item.id) 
-                ? 
-                <button>panding</button>
-               
-                :
-                <button onClick={() => handleFriendRequest(item)}>Add</button>
+
+
+                concatBlock.includes(data.uid+item.id)
+                  ?
+                  <button onClick={()=>handleUnblock(item)}>Unblock</button>
+                  :
+                  concatFriend.includes(item.id + data.uid) ||
+                    concatFriend.includes(data.uid + item.id)
+                    ?
+                    <button>Friend</button>
+                    :
+                    concatFriendRequest.includes(item.id + data.uid) ||
+                      concatFriendRequest.includes(data.uid + item.id)
+                      ?
+                      <button>panding</button>
+                      :
+                      <button onClick={() => handleFriendRequest(item)}>Add</button>
+
+                        &&
+
+                        concatBlock.includes(item.id + data.uid)
+                        ?
+                        <button onClick={handleBlcok}>block</button>
+                        :
+                        concatFriend.includes(item.id + data.uid) ||
+                          concatFriend.includes(data.uid + item.id)
+                          ?
+                          <button>Friend</button>
+                          :
+                          concatFriendRequest.includes(item.id + data.uid) ||
+                            concatFriendRequest.includes(data.uid + item.id)
+                            ?
+                            <button>panding</button>
+                            :
+                            <button onClick={() => handleFriendRequest(item)}>Add</button>
+
 
               }
-              
-              
+
+
             </div>
           ))
 
