@@ -6,7 +6,7 @@ import { getDatabase, ref, onValue, set, push, remove } from "firebase/database"
 import { useSelector } from 'react-redux';
 
 
-const FriendsList = () => {
+const FriendsList = ({designchange}) => {
   const db = getDatabase();
   let [friend,setFriend]=useState([])
   let data = useSelector((state) => (state.userinfo.value))
@@ -61,7 +61,7 @@ const FriendsList = () => {
 
 
   return (
-     <div className='userlist-box'>
+     <div className={`userlist-box ${designchange}`}>
        <div className='userlist-input-box'>
             <IoSearch className='search' />
             <input  type="text" placeholder='Search' />

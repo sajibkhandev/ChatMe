@@ -28,7 +28,7 @@ const Home = () => {
                 <GroupsList/>
             </Grid>
             <Grid size={4}>
-                <FriendsList/>
+                <FriendsList />
             </Grid>  
             <Grid size={4}>
                 <UserList/>
