@@ -39,6 +39,8 @@ const MyInput = styled(TextField)({
 
 const MyGroupsList = () => {
   const db = getDatabase();
+  let [search, setSearch] = useState([])
+  let [input, setInput] = useState("")
   let [grouppopup, setGroupPopup] = useState(false)
   let [groupname, setGroupName] = useState('')
   let [grouptag, setGrouptTag] = useState('')
@@ -49,6 +51,13 @@ const MyGroupsList = () => {
   let [adminDetails, setAdminDetails] = useState('')
 
   let data = useSelector((state) => (state.userinfo.value))
+
+  let handleSearch=(e)=>{
+    setInput(e.target.value)
+    let search=allgrouplist.filter(item=>item.groupname.toLowerCase().includes(e.target.value.toLowerCase()))
+    setSearch(search)
+    
+  }
 
 
 
@@ -137,7 +146,7 @@ const MyGroupsList = () => {
     <div className='userlist-box friendrequstlist-box'>
       <div className='userlist-input-box'>
         <IoSearch className='search' />
-        <input type="text" placeholder='Search' />
+        <input onChange={handleSearch} type="text" placeholder='Search' />
         <BsThreeDotsVertical className='threedot' />
       </div>
       <div className='userlist-profile-box'>
@@ -167,6 +176,64 @@ const MyGroupsList = () => {
         </div>
 
         {
+          input.length>0
+          ?
+          search.length>0 
+         ?
+          search.map(item => (
+            <>
+              <div className='title-profile'>
+                <div className='title-pere'>
+                  <div className='image-box'><img src='https://firebasestorage.googleapis.com/v0/b/chatme-292ec.firebasestorage.app/o/images.png?alt=media&token=2812c78b-1e9a-40b6-b715-c83ba8f1c633' alt="" /></div>
+                  <div>
+                    <h4>{item.groupname}</h4>
+                    <p>{item.grouptag}</p>
+                  </div>
+                </div>
+                <button onClick={()=>hanldeAddMember(item)}>Add Member</button>
+
+              </div>
+              {/* Add Member Design */}
+
+              {
+                addMembervisible &&
+                <div className='popup-image'>
+                  <div className='popup-image-box'>
+                    <h2 >Add New Member</h2>
+                    {
+                      userlist.map(item => (
+                        <div className='title-profile'>
+                          <div className='title-pere'>
+                            <div className='image-box'><img src='https://firebasestorage.googleapis.com/v0/b/chatme-292ec.firebasestorage.app/o/avater.webp?alt=media&token=7dcec873-c670-4239-9326-c6a84fc24054' alt="" /></div>
+                            <div>
+                              <h4>{item.username}</h4>
+                              <p>{item.id}</p>
+                            </div>
+                          </div>
+                          <button onClick={()=>hanldeAdd(item)}>Add</button>
+
+                        </div>
+
+                      ))
+                    }
+
+
+                    <div>
+                      <MyButton onClick={() => setAddMemberVisible(false)} variant="contained">Back to Home</MyButton>
+                      <MyButton onClick={handleAllMemberAdd} variant="contained">All Member Add</MyButton>
+                    </div>
+                  </div>
+
+                </div>
+              }
+
+            </>
+
+          ))
+          :
+          <h2 className='user-empty'>Groupt Empty</h2>
+
+          :
           allgrouplist.map(item => (
             <>
               <div className='title-profile'>
@@ -217,7 +284,7 @@ const MyGroupsList = () => {
             </>
 
           ))
-
+        
         }
 
 

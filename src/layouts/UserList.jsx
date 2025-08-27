@@ -11,10 +11,24 @@ import { useSelector } from 'react-redux';
 const UserList = () => {
   const db = getDatabase();
   let [userlist, setUserList] = useState([])
+  let [search, setSearch] = useState([])
+  let [input, setInput] = useState("")
   let [concatFriendRequest, setConcatFriendRequest] = useState([])
   let [concatFriend, setConcatFriend] = useState([])
   let [concatBlock, setConcatBlock] = useState([])
   let data = useSelector((state) => (state.userinfo.value))
+
+
+  let handleSearch=(e)=>{
+    setInput(e.target.value);
+
+    let search=userlist.filter(item=>item.username.toLowerCase().includes(e.target.value.toLowerCase()))
+    setSearch(search);
+    
+
+    
+
+  }
 
   useEffect(() => {
 
@@ -44,9 +58,6 @@ const UserList = () => {
     });
 
   }
-
-
-
 
   useEffect(() => {
     const frendrequestRef = ref(db, 'frendrequest/');
@@ -115,7 +126,7 @@ const UserList = () => {
     <div className='userlist-box'>
       <div className='userlist-input-box'>
         <IoSearch className='search' />
-        <input type="text" placeholder='Search' />
+        <input onChange={handleSearch} type="text" placeholder='Search' />
         <BsThreeDotsVertical className='threedot' />
       </div>
       <div className='userlist-profile-box'>
@@ -124,7 +135,69 @@ const UserList = () => {
           <BsThreeDotsVertical className='threedot' />
         </div>
         {
-          userlist.map(item => (
+         
+        input.length>0 ?
+         search.length>0 
+         ?
+          search.map(item=>(
+            <div className='title-profile'>
+              <div className='title-pere'>
+                <div className='image-box'><img src={item.photo} alt="" /></div>
+                <div>
+                  <h4>{item.username}</h4>
+                  <p>{item.email}</p>
+                </div>
+              </div>
+
+              {
+
+
+                concatBlock.includes(data.uid+item.id)
+                  ?
+                  <button onClick={()=>handleUnblock(item)}>Unblock</button>
+                  :
+                  concatFriend.includes(item.id + data.uid) ||
+                    concatFriend.includes(data.uid + item.id)
+                    ?
+                    <button>Friend</button>
+                    :
+                    concatFriendRequest.includes(item.id + data.uid) ||
+                      concatFriendRequest.includes(data.uid + item.id)
+                      ?
+                      <button>panding</button>
+                      :
+                      <button onClick={() => handleFriendRequest(item)}>Add</button>
+
+                        &&
+
+                        concatBlock.includes(item.id + data.uid)
+                        ?
+                        <button onClick={handleBlcok}>block</button>
+                        :
+                        concatFriend.includes(item.id + data.uid) ||
+                          concatFriend.includes(data.uid + item.id)
+                          ?
+                          <button>Friend</button>
+                          :
+                          concatFriendRequest.includes(item.id + data.uid) ||
+                            concatFriendRequest.includes(data.uid + item.id)
+                            ?
+                            <button>panding</button>
+                            :
+                            <button onClick={() => handleFriendRequest(item)}>Add</button>
+
+
+              }
+
+
+            </div>
+
+          ))
+
+         :
+         <h2 className='user-empty'>User Empty</h2>
+         :
+         userlist.map(item => (
 
             <div className='title-profile'>
               <div className='title-pere'>
@@ -177,7 +250,8 @@ const UserList = () => {
 
 
             </div>
-          ))
+        ))
+
 
         }
 
