@@ -436,4 +436,118 @@
 .margintop{
     margin-top: 150px;
 }
+/* Chat box Design */
+.sigle-box{
+    height: 910px;
+    width: 74%;
+    margin-top: 10px;
+     border-radius: 20px;
+     box-shadow: 0px 18px 15px 0px rgba(0,0,0,0.11);
+     -webkit-box-shadow: 0px 18px 15px 0px rgba(0,0,0,0.11);
+    -moz-box-shadow: 0px 18px 15px 0px rgba(0,0,0,0.11);
+    padding: 24px 50px;
+    box-sizing: border-box;
 
+}
+
+.chat-box{
+    border-bottom: 1px solid rgba(0, 0, 0,0.25);
+    padding-bottom: 20px;
+    margin-bottom: 70px;
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.chat-box .profile-box{
+    display: flex;
+    column-gap: 33px;
+     
+
+    
+   
+}
+.chat-box .profile-name{
+    margin-top: 8px;
+}
+.chat-box .profile-design{
+    margin-top: 14px;
+}
+.chat-box .profile-image{
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+}
+.chat-box .profile-image img{
+    width: 100%;
+}
+.chat-box .profile-name h4{
+    font-size: 24px;
+    font-weight: 600;
+    font-family: "Nunito", sans-serif;
+    color: #000;
+
+
+}
+.chat-box .profile-name p{
+    font-size: 14px;
+    font-weight: 400;
+    font-family: "Nunito", sans-serif;
+    color: #000;
+
+
+}
+.chat-box .profile-design .threedot{
+    font-size: 24px;
+    color: #5F35F5;
+}
+/* sender-design design */
+/* sender-design design */
+.sigle-box .box{
+    height: 80%;
+    overflow-y: scroll;
+
+}
+.sender-design{
+    margin: 30px 10px;
+   
+}
+.receiver-design{
+    margin: 30px 10px;
+    text-align: right;
+   
+}
+
+.sigle-box h6{
+    padding: 10px 50px;
+    background: #F1F1F1;
+    display: inline-block;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: "Nunito", sans-serif;
+    color: #000;
+}
+.sigle-box p{
+    padding-top: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: "Nunito", sans-serif;
+    color:  rgba(0, 0, 0,0.25);
+}
+
+.receiver-design h6{
+    
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 0px;
+     background: blue;
+    color: white;
+
+}
+
+/* sender-design design */
+/* sender-design design */
