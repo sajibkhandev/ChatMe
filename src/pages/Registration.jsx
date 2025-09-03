@@ -11,7 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
-import { Audio, Bars } from 'react-loader-spinner';
+
 
 const MyInput = styled(TextField)({
   '& label.Mui-focused': {

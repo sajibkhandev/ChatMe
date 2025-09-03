@@ -9,7 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { ToastContainer, toast } from 'react-toastify';
-import { Bars } from 'react-loader-spinner';
+
 import { useDispatch } from 'react-redux';
 import { userdetails } from '../slices/userInfoSlice';
 

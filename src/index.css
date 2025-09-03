@@ -504,50 +504,161 @@
 /* sender-design design */
 /* sender-design design */
 .sigle-box .box{
-    height: 80%;
+    height: 70%;
     overflow-y: scroll;
-
 }
-.sender-design{
-    margin: 30px 10px;
+.sender-design {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.receiver-design {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: flex-end; 
+}
+
+
+.message-box {
+  max-width: 70%;          
+  display: inline-block;   
+  word-wrap: break-word;
+  padding: 0;              
+}
+
+
+.sender-design h6 {
+  background: #f1f1f1;
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+ font-family: "Poppins", sans-serif;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 0;
+  padding: 10px 52px;    
+  display: inline-block;
+  position: relative;
+}
+
+.sender-icon {
+    position: absolute;
+    bottom: -1px ;
+    left: -7px;
+    color: #f1f1f1;
+}
+.receiver-design h6 {
+  background: blue;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 0;
+  padding: 10px 52px;
+  display: inline-block;
+  position: relative;
+}
+.receiver-icon{
+
+    position: absolute;
+       bottom: -1px ;
+       right: -7px;
+       color: blue;
+}
+
+.sender-design p,
+.receiver-design p {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 4px;
+  font-family: "Poppins", sans-serif;
+  color: rgba(0, 0, 0, 0.25);
+}
+.sender-design img{
+    width: 350px;
+    height: 460px;
+    border-radius: 10px;
+}
+.receiver-design img{
+    width: 350px;
+    height: 460px;
+    border: 14px solid blue;
+    border-radius: 10px;
+}
+
+
+
+/* sender-design design */
+/* sender-design design */
+
+.send-messages-box{
+    margin-right: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgb(0, 0, 0,0.25);
+    margin-top: 10px;
+    padding-top: 24px;
+}
+.send-messages-box .input-box{
+    width: 90%;
+    position: relative;
    
-}
-.receiver-design{
-    margin: 30px 10px;
-    text-align: right;
-   
-}
-
-.sigle-box h6{
-    padding: 10px 50px;
-    background: #F1F1F1;
-    display: inline-block;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    font-size: 16px;
-    font-weight: 500;
-    font-family: "Nunito", sans-serif;
-    color: #000;
-}
-.sigle-box p{
-    padding-top: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    font-family: "Nunito", sans-serif;
-    color:  rgba(0, 0, 0,0.25);
-}
-
-.receiver-design h6{
     
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 0px;
-     background: blue;
-    color: white;
-
+}
+.send-messages-box .input-box .emoji{
+    
+    position: absolute;
+    right: 60px;
+    top: 16px;
+    font-size: 22px;
+   
+    
+}
+.send-messages-box .input-box .camera{
+    
+    position: absolute;
+    right: 24px;
+    top: 13px;
+    font-size: 26px;
+   
+    
 }
 
-/* sender-design design */
-/* sender-design design */
+.send-messages-box .input-box input{
+   
+    padding-left: 10px;
+    padding-right: 100px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    width: 100%;
+    background: #F1F1F1;
+    border-radius: 10px;
+    border: 0px;
+    display: inline-block;
+    box-sizing: border-box;
+    font-size: 20px;
+    
+}
+
+
+.send-messages-box .button .send-icon{
+    background: blue;
+    font-size: 20px;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    
+
+   
+
+}
