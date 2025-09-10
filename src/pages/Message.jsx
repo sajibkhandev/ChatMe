@@ -18,10 +18,17 @@ import { activeChat } from '../slices/activeSlice';
 
 const Message = () => {
     const db = getDatabase();
-    let data2 = useSelector((state) => state.activechat.value)
 
+    let active = useSelector((state) => (state.activechat.value))
     let data = useSelector((state) => (state.userinfo.value))
+   
+    
+
+
+
+
     let [friend, setFriend] = useState([])
+    let [meassage, setMeassage] = useState([])
     let [input, setInput] = useState('')
 
     let dispatch = useDispatch()
@@ -46,21 +53,21 @@ const Message = () => {
 
         if (data.uid == item.senderid) {
             dispatch(activeChat({
-                status:"single",
+                status: "single",
                 id: item.receiverid,
                 name: item.receivername
 
             }))
-
+            
 
         } else {
             dispatch(activeChat({
-                status:"single",
+                status: "single",
                 id: item.senderid,
                 name: item.sendername
 
             }))
-
+             
 
 
         }
@@ -69,18 +76,54 @@ const Message = () => {
 
 
     let handleSend = () => {
-       if(data2.status=="single"){
-         set(push(ref(db, 'singlemessage/')), {
-            message:input
+        if (active.status == "single") {
+            set(push(ref(db, 'singlemessage/')), {
+                message: input,
+                whosenderid: data.uid,
+                whosendername: data.displayName,
+                whoreceiverid: active.id,
+                whoreceivername: active.name
 
-        }).then(()=>{
-            setInput("")
-        });
-       }else{
 
-       }
+            }).then(() => {
+                setInput("")
+            });
+        } else {
+
+        }
 
     }
+
+
+    useEffect(() => {
+        const singleMessageRef = ref(db, 'singlemessage/');
+        onValue(singleMessageRef, (snapshot) => {
+            let arr = []
+            snapshot.forEach(item => {
+                
+                    
+                    arr.push({ ...item.val() });
+              
+
+  
+                
+
+                
+
+
+
+
+
+            })
+            setMeassage(arr)
+
+        });
+
+    }, [])
+
+
+
+
     return (
         <Grid container spacing={3}>
             <Grid size={4}>
@@ -129,7 +172,7 @@ const Message = () => {
 
                             </div>
                             <div className='profile-name'>
-                                <h4>{data2.name}</h4>
+                                <h4>{active.name}</h4>
                                 <p>Online</p>
                             </div>
                         </div>
@@ -141,37 +184,69 @@ const Message = () => {
                     {/* Dynamic design */}
 
                     <div className='box'>
-                        <div className='sender-design'>
-                            <div className="message-box">
-                                <h6>Hey There ! <BsTriangleFill className='sender-icon' /></h6>
-                                <p>Today, 2:01pm</p>
-                            </div>
-                        </div>
+                        {
+                            meassage.map(item => (
+                                data.uid==item.whosenderid ?
+                                <div className='receiver-design'>
+                                        <div className="message-box">
+                                            <h6>{item.message}<BsTriangleFill className='receiver-icon' /></h6>
+                                            <p>Today, 2:01pm</p>
+                                        </div>
+                                    </div>
+                                
+                                 
+                                
+                            :
+                            <div className='sender-design'>
+                                        <div className="message-box">
+                                            <h6>{item.message} <BsTriangleFill className='sender-icon' /></h6>
+                                            <p>Today, 2:01pm</p>
+                                        </div>
+                                    </div>
+                                
+                                   
+                                
+                                   
+                                  
+                                    
+                                 
 
-                        <div className='receiver-design'>
-                            <div className="message-box">
-                                <h6>Hey There   <BsTriangleFill className='receiver-icon' /></h6>
-                                <p>Today, 2:01pm</p>
-                            </div>
-                        </div>
 
-                        <div className='sender-design'>
+                            ))
+                        }
+
+                        {/* Sender text design */}
+
+                        {/* Sender text design */}
+                        {/* Receiver text design */}
+
+                        {/* Receiver text design */}
+
+
+                        {/* Sender Image design */}
+                        {/* <div className='sender-design'>
                             <div className="message-box">
                                 <ModalImage small={Image} large={Image} alt="Hello World!"
                                 />
 
                             </div>
-                        </div>
-                        <div className='receiver-design'>
+                        </div> */}
+                        {/* Sender Image design */}
+                        {/* Receiver Image design */}
+                        {/* <div className='receiver-design'>
                             <div className="message-box">
                                 <ModalImage small={Image} large={Image} alt="Hello World!"
                                 />
                             </div>
-                        </div>
+                        </div> */}
+                        {/* Receiver Image design */}
                     </div>
+
+
+
                     <div className='send-messages-box'>
                         <div className='input-box'>
-                            <input value={input} onChange={(e)=>setInput(e.target.value)} type="text" />
+                            <input value={input} onChange={(e) => setInput(e.target.value)} type="text" />
                             <MdOutlineEmojiEmotions className='emoji' />
                             <CiCamera className='camera' />
                         </div>
