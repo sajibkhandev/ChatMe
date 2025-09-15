@@ -15,21 +15,23 @@ import ModalImage from "react-modal-image";
 import { useDispatch, useSelector } from 'react-redux';
 import { IoSearch } from 'react-icons/io5';
 import { activeChat } from '../slices/activeSlice';
+import { RxCross2 } from "react-icons/rx";
+import moment from 'moment';
+import { getDownloadURL, getStorage, ref as sref, uploadBytes } from "firebase/storage";
+
 
 const Message = () => {
     const db = getDatabase();
+    const storage = getStorage();
 
     let active = useSelector((state) => (state.activechat.value))
     let data = useSelector((state) => (state.userinfo.value))
-   
-    
-
-
 
 
     let [friend, setFriend] = useState([])
     let [meassage, setMeassage] = useState([])
     let [input, setInput] = useState('')
+    let [messageoption, setMessageOption] = useState(false)
 
     let dispatch = useDispatch()
 
@@ -50,6 +52,7 @@ const Message = () => {
     }, [])
 
     let handleMessage = (item) => {
+        setMessageOption(true)
 
         if (data.uid == item.senderid) {
             dispatch(activeChat({
@@ -58,7 +61,7 @@ const Message = () => {
                 name: item.receivername
 
             }))
-            
+
 
         } else {
             dispatch(activeChat({
@@ -67,7 +70,7 @@ const Message = () => {
                 name: item.sendername
 
             }))
-             
+
 
 
         }
@@ -82,7 +85,8 @@ const Message = () => {
                 whosenderid: data.uid,
                 whosendername: data.displayName,
                 whoreceiverid: active.id,
-                whoreceivername: active.name
+                whoreceivername: active.name,
+                date: `${new Date().getFullYear()} ${new Date().getMonth() + 1} ${new Date().getDate()}, ${new Date().getHours()} : ${new Date().getMinutes()}`
 
 
             }).then(() => {
@@ -100,26 +104,43 @@ const Message = () => {
         onValue(singleMessageRef, (snapshot) => {
             let arr = []
             snapshot.forEach(item => {
-                
-                    
+
+                if ((item.val().whosenderid == data.uid && item.val().whoreceiverid == active.id)
+                    || (item.val().whoreceiverid == data.uid && item.val().whosenderid == active.id)) {
+
                     arr.push({ ...item.val() });
-              
-
-  
-                
-
-                
-
-
-
-
-
+                }
             })
             setMeassage(arr)
 
         });
 
-    }, [])
+    }, [active, data])
+
+    let handleImage = (e) => {
+        console.log(e.target.files[0]);
+
+        const storageRef = sref(storage, 'some-child');
+
+        uploadBytes(storageRef, e.target.files[0]).then((snapshot) => {
+            getDownloadURL(storageRef).then((downloadURL) => {
+                console.log('File available at', downloadURL);
+                set(push(ref(db, 'singlemessage/')), {
+                    image: downloadURL,
+                    whosenderid: data.uid,
+                    whosendername: data.displayName,
+                    whoreceiverid: active.id,
+                    whoreceivername: active.name,
+                    date: `${new Date().getFullYear()} ${new Date().getMonth() + 1} ${new Date().getDate()}, ${new Date().getHours()} : ${new Date().getMinutes()}`
+
+
+                }).then(() => {
+                    setInput("")
+                });
+            });
+        });
+
+    }
 
 
 
@@ -164,102 +185,97 @@ const Message = () => {
             </Grid>
             <Grid size={8}>
 
-                <div className='sigle-box'>
-                    <div className='chat-box'>
-                        <div className='profile-box'>
-                            <div className='profile-image'>
-                                <img src={Profile} alt="" />
+                {
+                    messageoption &&
+                    <div className='sigle-box'>
+                        <div className='chat-box'>
+                            <div className='profile-box'>
+                                <div className='profile-image'>
+                                    <img src={Profile} alt="" />
 
+                                </div>
+                                <div className='profile-name'>
+
+                                    <h4>{active.name}</h4>
+
+                                    <p>Online</p>
+                                </div>
                             </div>
-                            <div className='profile-name'>
-                                <h4>{active.name}</h4>
-                                <p>Online</p>
+                            <div className='profile-design'>
+                                <RxCross2 onClick={() => setMessageOption(false)} className='threedot' />
+                            </div>
+
+                        </div>
+                        {/* Dynamic design */}
+
+                        <div className='box'>
+                            {
+                                meassage.map(item => (
+                                    data.uid == item.whosenderid ?
+                                        item.image
+                                            ?
+                                            <div className='receiver-design'>
+                                                <div className="message-box">
+                                                    <ModalImage small={item.image} large={item.image} alt="Hello World!"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            :
+
+                                            <div className='receiver-design'>
+                                                <div className="message-box">
+                                                    <h6>{item.message}<BsTriangleFill className='receiver-icon' /></h6>
+                                                    <p>{moment(item.date, "YYYYMMDD hh:mm").fromNow()}</p>
+                                                </div>
+                                            </div>
+
+                                        :
+                                        item.image ?
+                                            <div className='sender-design'>
+                                                <div className="message-box">
+                                                    <ModalImage small={item.image} large={item.image} alt="Hello World!"
+                                                    />
+
+                                                </div>
+                                            </div>
+                                            :
+                                            <div className='sender-design'>
+                                                <div className="message-box">
+                                                    <h6>{item.message} <BsTriangleFill className='sender-icon' /></h6>
+                                                    <p>{moment(item.date, "YYYYMMDD hh:mm").fromNow()}</p>
+                                                </div>
+                                            </div>
+
+
+                                ))
+                            }
+
+                           
+                        </div>
+
+
+
+                        <div className='send-messages-box'>
+                            <div className='input-box'>
+                                <input value={input} onChange={(e) => setInput(e.target.value)} type="text" />
+                                <MdOutlineEmojiEmotions className='emoji' />
+                                <div className='camera-box'>
+                                    <input onChange={handleImage} type="file" />
+                                    <CiCamera className='camera' />
+                                </div>
+                            </div>
+                            <div onClick={handleSend} className='button'>
+                                <RiSendPlaneFill className='send-icon' />
                             </div>
                         </div>
-                        <div className='profile-design'>
-                            <BsThreeDotsVertical className='threedot' />
-                        </div>
+
+
+
+                        {/* Dynamic design */}
 
                     </div>
-                    {/* Dynamic design */}
-
-                    <div className='box'>
-                        {
-                            meassage.map(item => (
-                                data.uid==item.whosenderid ?
-                                <div className='receiver-design'>
-                                        <div className="message-box">
-                                            <h6>{item.message}<BsTriangleFill className='receiver-icon' /></h6>
-                                            <p>Today, 2:01pm</p>
-                                        </div>
-                                    </div>
-                                
-                                 
-                                
-                            :
-                            <div className='sender-design'>
-                                        <div className="message-box">
-                                            <h6>{item.message} <BsTriangleFill className='sender-icon' /></h6>
-                                            <p>Today, 2:01pm</p>
-                                        </div>
-                                    </div>
-                                
-                                   
-                                
-                                   
-                                  
-                                    
-                                 
-
-
-                            ))
-                        }
-
-                        {/* Sender text design */}
-
-                        {/* Sender text design */}
-                        {/* Receiver text design */}
-
-                        {/* Receiver text design */}
-
-
-                        {/* Sender Image design */}
-                        {/* <div className='sender-design'>
-                            <div className="message-box">
-                                <ModalImage small={Image} large={Image} alt="Hello World!"
-                                />
-
-                            </div>
-                        </div> */}
-                        {/* Sender Image design */}
-                        {/* Receiver Image design */}
-                        {/* <div className='receiver-design'>
-                            <div className="message-box">
-                                <ModalImage small={Image} large={Image} alt="Hello World!"
-                                />
-                            </div>
-                        </div> */}
-                        {/* Receiver Image design */}
-                    </div>
-
-
-
-                    <div className='send-messages-box'>
-                        <div className='input-box'>
-                            <input value={input} onChange={(e) => setInput(e.target.value)} type="text" />
-                            <MdOutlineEmojiEmotions className='emoji' />
-                            <CiCamera className='camera' />
-                        </div>
-                        <div onClick={handleSend} className='button'>
-                            <RiSendPlaneFill className='send-icon' />
-                        </div>
-                    </div>
-
-
-
-                    {/* Dynamic design */}
-
-                </div>
+                }
             </Grid>
         </Grid>
     )

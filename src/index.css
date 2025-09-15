@@ -622,11 +622,16 @@
    
     
 }
+.camera-box{
+    position: relative;
+}
+
+
 .send-messages-box .input-box .camera{
     
     position: absolute;
     right: 24px;
-    top: 13px;
+    top: -50px;
     font-size: 26px;
    
     
