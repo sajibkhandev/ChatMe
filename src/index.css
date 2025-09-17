@@ -613,6 +613,12 @@
    
     
 }
+.emoji-box{
+    position: absolute;
+    top: -455px;
+    right: -60px;
+
+}
 .send-messages-box .input-box .emoji{
     
     position: absolute;
@@ -624,6 +630,9 @@
 }
 .camera-box{
     position: relative;
+}
+.camera-box input{
+    display: none !important;
 }
 
 
@@ -668,3 +677,4 @@
 .extra-margin{
     margin-top: 150px;
 }
+

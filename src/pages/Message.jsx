@@ -18,6 +18,10 @@ import { activeChat } from '../slices/activeSlice';
 import { RxCross2 } from "react-icons/rx";
 import moment from 'moment';
 import { getDownloadURL, getStorage, ref as sref, uploadBytes } from "firebase/storage";
+import ScrollToBottom from 'react-scroll-to-bottom';
+import EmojiPicker from 'emoji-picker-react';
+
+
 
 
 const Message = () => {
@@ -32,6 +36,8 @@ const Message = () => {
     let [meassage, setMeassage] = useState([])
     let [input, setInput] = useState('')
     let [messageoption, setMessageOption] = useState(false)
+    let [image, setImage] = useState('')
+    let [emoji, setEmoji] = useState(false)
 
     let dispatch = useDispatch()
 
@@ -79,19 +85,45 @@ const Message = () => {
 
 
     let handleSend = () => {
+
+
         if (active.status == "single") {
-            set(push(ref(db, 'singlemessage/')), {
-                message: input,
-                whosenderid: data.uid,
-                whosendername: data.displayName,
-                whoreceiverid: active.id,
-                whoreceivername: active.name,
-                date: `${new Date().getFullYear()} ${new Date().getMonth() + 1} ${new Date().getDate()}, ${new Date().getHours()} : ${new Date().getMinutes()}`
+            if (input && !image) {
+                set(push(ref(db, 'singlemessage/')), {
+                    message: input,
+                    whosenderid: data.uid,
+                    whosendername: data.displayName,
+                    whoreceiverid: active.id,
+                    whoreceivername: active.name,
+                    date: `${new Date().getFullYear()} ${new Date().getMonth() + 1} ${new Date().getDate()}, ${new Date().getHours()} : ${new Date().getMinutes()}`
+
+                }).then(() => {
+                    setInput("")
+                });
+            }
+            if (image) {
+                const storageRef = sref(storage, 'some-child');
+                uploadBytes(storageRef, image).then((snapshot) => {
+                    getDownloadURL(storageRef).then((downloadURL) => {
+                        console.log('File available at', downloadURL);
+                        set(push(ref(db, 'singlemessage/')), {
+                            image: downloadURL,
+                            whosenderid: data.uid,
+                            whosendername: data.displayName,
+                            whoreceiverid: active.id,
+                            whoreceivername: active.name,
+                            date: `${new Date().getFullYear()} ${new Date().getMonth() + 1} ${new Date().getDate()}, ${new Date().getHours()} : ${new Date().getMinutes()}`
 
 
-            }).then(() => {
-                setInput("")
-            });
+                        }).then(() => {
+                            setInput("")
+                            setImage("")
+                        });
+                    });
+                });
+
+            }
+
         } else {
 
         }
@@ -118,31 +150,66 @@ const Message = () => {
     }, [active, data])
 
     let handleImage = (e) => {
-        console.log(e.target.files[0]);
+        setImage(e.target.files[0]);
 
-        const storageRef = sref(storage, 'some-child');
-
-        uploadBytes(storageRef, e.target.files[0]).then((snapshot) => {
-            getDownloadURL(storageRef).then((downloadURL) => {
-                console.log('File available at', downloadURL);
-                set(push(ref(db, 'singlemessage/')), {
-                    image: downloadURL,
-                    whosenderid: data.uid,
-                    whosendername: data.displayName,
-                    whoreceiverid: active.id,
-                    whoreceivername: active.name,
-                    date: `${new Date().getFullYear()} ${new Date().getMonth() + 1} ${new Date().getDate()}, ${new Date().getHours()} : ${new Date().getMinutes()}`
-
-
-                }).then(() => {
-                    setInput("")
-                });
-            });
-        });
 
     }
 
+    let hanldeKeyPress = (e) => {
+        // console.log(e.key);
+        if (e.key == 'Enter') {
+            if (active.status == "single") {
+                if (input && !image) {
+                    set(push(ref(db, 'singlemessage/')), {
+                        message: input,
+                        whosenderid: data.uid,
+                        whosendername: data.displayName,
+                        whoreceiverid: active.id,
+                        whoreceivername: active.name,
+                        date: `${new Date().getFullYear()} ${new Date().getMonth() + 1} ${new Date().getDate()}, ${new Date().getHours()} : ${new Date().getMinutes()}`
 
+                    }).then(() => {
+                        setInput("")
+                    });
+                }
+                if (image) {
+                    const storageRef = sref(storage, 'some-child');
+                    uploadBytes(storageRef, image).then((snapshot) => {
+                        getDownloadURL(storageRef).then((downloadURL) => {
+                            console.log('File available at', downloadURL);
+                            set(push(ref(db, 'singlemessage/')), {
+                                image: downloadURL,
+                                whosenderid: data.uid,
+                                whosendername: data.displayName,
+                                whoreceiverid: active.id,
+                                whoreceivername: active.name,
+                                date: `${new Date().getFullYear()} ${new Date().getMonth() + 1} ${new Date().getDate()}, ${new Date().getHours()} : ${new Date().getMinutes()}`
+
+
+                            }).then(() => {
+                                setInput("")
+                                setImage("")
+                            });
+                        });
+                    });
+
+                }
+
+            } else {
+
+            }
+
+        }
+
+    }
+
+    let handleEmojiPicker = (emoji) => {
+        // console.log(emoji.emoji);
+        setInput(input + emoji.emoji)
+
+
+    }
+   
 
 
     return (
@@ -208,7 +275,7 @@ const Message = () => {
                         </div>
                         {/* Dynamic design */}
 
-                        <div className='box'>
+                        <ScrollToBottom className='box'>
                             {
                                 meassage.map(item => (
                                     data.uid == item.whosenderid ?
@@ -250,25 +317,36 @@ const Message = () => {
 
                                 ))
                             }
-
-                           
-                        </div>
+                        </ScrollToBottom>
 
 
 
                         <div className='send-messages-box'>
                             <div className='input-box'>
-                                <input value={input} onChange={(e) => setInput(e.target.value)} type="text" />
-                                <MdOutlineEmojiEmotions className='emoji' />
+                                <input onKeyPress={hanldeKeyPress} value={input} onChange={(e) => setInput(e.target.value)} type="text" />
+                               
+                                <MdOutlineEmojiEmotions onClick={() => setEmoji(!emoji)} className='emoji' />
+                                {
+                                    emoji &&
+                                    <div className='emoji-box'>
+                                        <EmojiPicker onEmojiClick={(emoji) => handleEmojiPicker(emoji)} />
+                                    </div>
+                                }
                                 <div className='camera-box'>
-                                    <input onChange={handleImage} type="file" />
-                                    <CiCamera className='camera' />
+                                    <label htmlFor="sajib">
+                                        <input id='sajib' onChange={handleImage} type="file" />
+                                        <CiCamera className='camera' />
+                                    </label>
                                 </div>
                             </div>
                             <div onClick={handleSend} className='button'>
                                 <RiSendPlaneFill className='send-icon' />
                             </div>
                         </div>
+
+
+
+
 
 
 
